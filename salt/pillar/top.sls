@@ -1,5 +1,3 @@
 base:
   '*':
-    - apache
-    - node
     - mongodb
