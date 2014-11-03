@@ -22,3 +22,7 @@ a2ensite acadaslate.com:
     - require:
       - pkg: apache2
       - file: /etc/apache2/sites-available/acadaslate.com
+
+/var/www/acadaslate.com:
+  file.symlink:
+    - target: /vagrant/acadaslate.com/public
