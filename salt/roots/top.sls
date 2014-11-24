@@ -1,5 +1,5 @@
 base:
   '*':
-    - apache
     - node
     - mongodb
+    - nginx
