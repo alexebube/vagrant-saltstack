@@ -1,23 +1,50 @@
-get-passenger
+add-key:
+  cmd.run:
+    - name: sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 561F9B9CAC40B2F7
 
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 561F9B9CAC40B2F7
-sudo apt-get install apt-transport-https ca-certificates
+/etc/apt/sources.list.d/passenger.list:
+  file.managed:
+    - source: salt://passenger/passenger.list
+    - require_in:
+      - pkg: make-passenger
+    - require:
+      - cmd: add-key
 
-Create a file /etc/apt/sources.list.d/passenger.list
+passenger-dependencies:
+  pkg.installed:
+    - names:
+      - apt-transport-https
+      - ca-certificates
 
-deb https://oss-binaries.phusionpassenger.com/apt/passenger precise main
+make-passenger:
+  pkg.installed:
+    - names:
+      - nginx-extras
+      - passenger
+    - refresh: true
+    - require:
+      - cmd: run-ruby
 
+run-update:
+  cmd.run:
+    - names:
+      - sudo dpkg --configure -a
+      - sudo apt-get update
 
+run-rvm:
+  cmd.run:
+    - names:
+      - sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
+      - \curl -sSL https://get.rvm.io | bash
+      - source /etc/profile.d/rvm.sh
+      - source ~/.bashrc
+    - require:
+      - cmd: run-update
 
-sudo chown root: /etc/apt/sources.list.d/passenger.list
-sudo chmod 600 /etc/apt/sources.list.d/passenger.list
-sudo apt-get update
-
-
-sudo apt-get install nginx-extras passenger
-
-Edit /etc/nginx/nginx.conf and uncomment passenger_root and passenger_ruby
-
-sudo service nginx restart
-
-make-passenger
+run-ruby:
+  cmd.run:
+    - names:
+      - sudo rvm install ruby-2.1.5
+      - rvm use ruby-2.1.5
+    - require:
+      - cmd: run-rvm
