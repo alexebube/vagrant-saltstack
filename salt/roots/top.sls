@@ -1,5 +1,6 @@
 base:
   '*':
-    - apache
+    - init
     - node
     - mongodb
+    - passenger
