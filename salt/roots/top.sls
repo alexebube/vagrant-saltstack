@@ -1,6 +1,6 @@
 base:
   '*':
+    - init
     - node
     - mongodb
-    - nginx
     - passenger

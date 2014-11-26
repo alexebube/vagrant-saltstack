@@ -23,7 +23,7 @@ make-passenger:
       - passenger
     - refresh: true
     - require:
-      - cmd: run-ruby
+      - cmd: run-rvm
 
 run-update:
   cmd.run:
@@ -35,16 +35,8 @@ run-rvm:
   cmd.run:
     - names:
       - sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
-      - \curl -sSL https://get.rvm.io | bash
+      - \curl -sSL https://get.rvm.io | bash -s stable --ruby
       - source /etc/profile.d/rvm.sh
       - source ~/.bashrc
     - require:
       - cmd: run-update
-
-run-ruby:
-  cmd.run:
-    - names:
-      - sudo rvm install ruby-2.1.5
-      - rvm use ruby-2.1.5
-    - require:
-      - cmd: run-rvm
